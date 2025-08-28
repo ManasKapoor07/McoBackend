@@ -26,10 +26,15 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     "corsheaders",
-    
+    "McoBackend.signupMco",
     'rest_framework_simplejwt',
-    "rest_framework",            # Django REST Framework
-    'McoBackend.products',       # Your Products app
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
+    "rest_framework",     
+    # Django REST Framework
+    'McoBackend.products',
+    'McoBackend.signupMco.loginMco',       # Your Products app
+    # Your Products app
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
@@ -38,6 +43,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    
 }
 # ----------------------------
 # Middleware
@@ -54,7 +60,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://m-co-qj1f.vercel.app/",   # 👈 Replace with actual frontend URL
+    "https://m-co-qj1f.vercel.app",   # 👈 Replace with actual frontend URL
     "http://localhost:3000",                # for local React dev
 ]
 CORS_ALLOW_ALL_ORIGINS = True
