@@ -1,32 +1,28 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from datetime import timedelta
+from .serializers import MongoLoginSerializer
+class MongoLoginAPIView(APIView):
+    def post(self, request):
+        serializer = MongoLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user_info = serializer.validated_data['user']  # This is a dict
 
+            # Manually create tokens (no .id needed)
+            refresh = RefreshToken()
+            refresh['user_id'] = str(user_info.get('_id'))  # or 'id' depending on your dict
+            refresh['email'] = user_info.get('email')
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+            access = refresh.access_token
+            access.set_exp(lifetime=timedelta(minutes=15))  # optional: custom expiry
 
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
+            return Response({
+                "message": "Login successful",
+                "user": user_info,
+                "access": str(access),
+                "refresh": str(refresh),
+            }, status=status.HTTP_200_OK)
 
-        # Add custom claims
-        token['name'] = user.get_full_name() or user.username
-        token['username'] = user.username
-        token['email'] = user.email
-
-        return token
-
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        data['message'] = 'Login successful'
-        # You can add other user info here as well, but it will be redundant with claims
-        return data
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
-
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        return Response(response.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
