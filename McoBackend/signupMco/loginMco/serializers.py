@@ -25,7 +25,7 @@ class MongoLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid username or password.")
 
         attrs['user'] = {
-            "id": str(user_doc.get("_id")),
+            "id": str(user_doc.get("user_id")),
             "username": user_doc.get("username"),
             "email": user_doc.get("email"),
             "first_name": user_doc.get("first_name"),

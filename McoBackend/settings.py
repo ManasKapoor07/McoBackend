@@ -29,12 +29,12 @@ INSTALLED_APPS = [
     "McoBackend.signupMco",
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
+    'McoBackend.DescriptionProduct',
     'rest_framework_simplejwt.token_blacklist',
     "rest_framework",     
-    # Django REST Framework
+    'McoBackend.signupMco.checkRegister',
     'McoBackend.products',
     'McoBackend.signupMco.loginMco',       # Your Products app
-    # Your Products app
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
